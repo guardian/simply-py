@@ -15,7 +15,7 @@ To do this you also need to enable the remote shell feature by adding the follow
 You can then connect to your shell and create the first piece of config:
 
 	from models import Configuration
-	config = Configuration(key="<your lookup key>", value="<your value>")
+	config = Configuration(id="<your lookup key>" key="<your lookup key>", value="<your value>")
 	config.put()
 
 Once this value has been created you can then create other configuration via the Data Viewer.
