@@ -1,7 +1,10 @@
 import time
 
-def cors(response):
-	response.headers.add_header("Access-Control-Allow-Origin", "*")
+def cors(response, host=None):
+	if not host:
+		host = "*"
+
+	response.headers.add_header("Access-Control-Allow-Origin", host)
 
 
 def cache(response, cache_time):
