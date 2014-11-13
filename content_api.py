@@ -1,6 +1,7 @@
 import urlparse
 import urllib
 import logging
+import datetime
 
 from google.appengine.api.urlfetch import fetch
 from google.appengine.api import memcache
@@ -10,6 +11,10 @@ CONTENT_API_HOST = 'content.guardianapis.com'
 def content_id(url):
 	parsed_url = urlparse.urlparse(url)
 	return parsed_url.path
+
+def from_date(days):
+	past_date =  datetime.date.today() - datetime.timedelta(days=days)
+	return past_date.isoformat()
 
 def read(content_id, params = None):
 	client = memcache.Client()
