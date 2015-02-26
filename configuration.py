@@ -1,6 +1,6 @@
 from models import Configuration
 
-def lookup(key, default):
+def lookup(key, default=None):
 	results = Configuration.query(Configuration.key == key)
 
 	if not results.iter().has_next():
