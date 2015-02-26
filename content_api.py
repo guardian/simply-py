@@ -2,11 +2,18 @@ import urlparse
 import urllib
 import logging
 import datetime
+import copy
 
 from google.appengine.api.urlfetch import fetch
 from google.appengine.api import memcache
 
-CONTENT_API_HOST = 'content.guardianapis.com'
+import configuration
+
+def capi_host():
+	return configuration.lookup('CONTENT_API_HOST', 'content.guardianapis.com')
+
+def capi_key():
+	return configuration.lookup('CONTENT_API_KEY', 'your-app-id')
 
 def content_id(url):
 	parsed_url = urlparse.urlparse(url)
@@ -16,10 +23,21 @@ def from_date(days):
 	past_date =  datetime.date.today() - datetime.timedelta(days=days)
 	return past_date.isoformat()
 
-def read(content_id, params = None):
+def add_api_key(params):
+
+	if 'api-key' in params:
+		return params
+
+	final_params = copy.copy(params)
+
+	final_params['api-key'] = capi_key()
+
+	return final_params
+
+def read(content_id, params=None):
 	client = memcache.Client()
 
-	url = "http://%s%s" % (CONTENT_API_HOST, content_id)
+	url = "http://{host}{content_path}".format(host=capi_host(), content_path=content_id)
 
 	if params:
 		url = url + "?" + urllib.urlencode(params)
@@ -41,7 +59,10 @@ def read(content_id, params = None):
 	return result.content
 
 def search(query):
-	url = "http://content.guardianapis.com/search?%s" % urllib.urlencode(query)
+	url = "http://{host}/search?{params}".format(host=capi_host(),
+		params=urllib.urlencode(add_api_key(query)))
+
+	logging.info(url)
 
 	cached_data = memcache.get(url)
 
