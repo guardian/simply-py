@@ -25,6 +25,9 @@ def from_date(days):
 
 def add_api_key(params):
 
+	if not params:
+		return {'api-key' : capi_key()}
+
 	if 'api-key' in params:
 		return params
 
@@ -39,8 +42,8 @@ def read(content_id, params=None):
 
 	url = "http://{host}{content_path}".format(host=capi_host(), content_path=content_id)
 
-	if params:
-		url = url + "?" + urllib.urlencode(params)
+	params = add_api_key(params)
+	url = url + "?" + urllib.urlencode(params)
 
 	#logging.info(url)
 
