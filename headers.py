@@ -12,4 +12,4 @@ def cache(response, cache_time):
 	response.headers['Date'] = str(time.time())
 
 def json(response):
-	response.headers['Content-Type'] = 'application/javascript'
+	response.headers['Content-Type'] = 'application/json'
